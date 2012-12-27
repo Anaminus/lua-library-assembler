@@ -9,10 +9,17 @@ except it also reads the contents of a found file, which gets added to the
 assembled file.
 
 This module sets up the searcher function, and returns a function that, when
-called with a file name as an argument, allows the assembled content to be
-written to the given file. So, the general prodecure for assembling a library
-is to require the assembler, require the library you wish to assemble, then
-call the assembler with the file to output to. Example:
+called, allows the assembled content to be written to a file. The name of the
+file is the name of the first required library, with ".lua" as the extension.
+The first required library is considered as the root library, which is what
+would be loaded were the assembled file to be required.
+
+However, two optional arguments may be specified. The first is the name of the
+root library to use. The second argument specifies the exact file name to
+output to (".lua" is not appended).
+
+So, the general prodecure for assembling a library is to require the
+assembler, require the library you wish to assemble, then call the assembler.
 
     require 'AssembleLibrary'
 
@@ -20,12 +27,13 @@ call the assembler with the file to output to. Example:
     require 'library'
     -- etc
 
-    require 'AssembleLibrary' ("library-assembled.lua")
+    require 'AssembleLibrary' ()
 
-A second argument to the assembler function specifies the root library, which
-allows the assembled file to be used as a library itself. If no second
-argument is given, the name of the first library that was required will be
-used.
+Note that a root library with a compound name may not work well with the name
+of the assembled file, so it's a good idea to specify the file name directly
+in such a case:
+
+    require 'AssembleLibrary' ('library.sublib.subfunc', "library.lua")
 
 If a library happens to load dependencies only when needed, then you will have
 to use it in whatever way necessary to make sure they are loaded. If the
